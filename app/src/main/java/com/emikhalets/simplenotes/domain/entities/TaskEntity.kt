@@ -1,7 +1,7 @@
 package com.emikhalets.simplenotes.domain.entities
 
 data class TaskEntity(
-    val id: Long,
+    val id: Long = 0,
     val content: String,
-    val checked: Boolean,
+    val checked: Boolean = false,
 )
