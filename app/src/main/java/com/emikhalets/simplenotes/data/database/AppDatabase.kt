@@ -16,12 +16,15 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract val tasksDao: TasksDao
 
-    private var instance: AppDatabase? = null
+    companion object {
 
-    fun getInstance(context: Context) = instance ?: synchronized(this) {
-        instance ?: buildDatabase(context).also { instance = it }
+        private var instance: AppDatabase? = null
+
+        fun getInstance(context: Context) = instance ?: synchronized(this) {
+            instance ?: buildDatabase(context).also { instance = it }
+        }
+
+        private fun buildDatabase(context: Context) =
+            Room.databaseBuilder(context, AppDatabase::class.java, "SimpleNotes.db").build()
     }
-
-    private fun buildDatabase(context: Context) =
-        Room.databaseBuilder(context, AppDatabase::class.java, "SimpleNotes.db").build()
 }

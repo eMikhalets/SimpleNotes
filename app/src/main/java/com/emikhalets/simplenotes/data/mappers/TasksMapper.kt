@@ -2,8 +2,9 @@ package com.emikhalets.simplenotes.data.mappers
 
 import com.emikhalets.simplenotes.data.database.entities.TaskDb
 import com.emikhalets.simplenotes.domain.entities.TaskEntity
+import javax.inject.Inject
 
-class TasksMapper {
+class TasksMapper @Inject constructor() {
 
     fun mapDbToEntity(dbEntity: TaskDb): TaskEntity = TaskEntity(
         id = dbEntity.id,

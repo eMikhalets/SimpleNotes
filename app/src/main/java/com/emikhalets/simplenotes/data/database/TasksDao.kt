@@ -20,9 +20,9 @@ interface TasksDao {
     @Delete
     suspend fun delete(entity: TaskDb)
 
-    @Query("SELECT * FROM tasks")
+    @Query("SELECT * FROM tasks_table")
     fun getAllFlow(): Flow<List<TaskDb>>
 
-    @Query("SELECT * FROM tasks WHERE id = :id")
+    @Query("SELECT * FROM tasks_table WHERE id = :id")
     fun getItemFlow(id: Long): Flow<TaskDb>
 }

@@ -8,8 +8,9 @@ import com.emikhalets.simplenotes.utils.executeAsync
 import com.emikhalets.simplenotes.utils.executeSync
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class AppRepositoryImpl(
+class AppRepositoryImpl @Inject constructor(
     private val tasksDao: TasksDao,
     private val tasksMapper: TasksMapper,
 ) : AppRepository {

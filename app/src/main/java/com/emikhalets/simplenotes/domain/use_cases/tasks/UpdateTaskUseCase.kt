@@ -5,5 +5,5 @@ import com.emikhalets.simplenotes.domain.entities.TaskEntity
 
 class UpdateTaskUseCase(private val repository: AppRepository) {
 
-    operator fun invoke(entity: TaskEntity) = repository.updateTask(entity)
+    suspend operator fun invoke(entity: TaskEntity) = repository.updateTask(entity)
 }
