@@ -1,4 +1,4 @@
-package com.emikhalets.simplenotes.ui.theme
+package com.emikhalets.simplenotes.presentation.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

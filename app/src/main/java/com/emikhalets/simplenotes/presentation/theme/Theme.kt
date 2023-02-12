@@ -1,4 +1,4 @@
-package com.emikhalets.simplenotes.ui.theme
+package com.emikhalets.simplenotes.presentation.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

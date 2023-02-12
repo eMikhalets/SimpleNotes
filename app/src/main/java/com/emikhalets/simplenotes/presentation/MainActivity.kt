@@ -1,4 +1,4 @@
-package com.emikhalets.simplenotes
+package com.emikhalets.simplenotes.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.emikhalets.simplenotes.ui.theme.SimpleNotesTheme
+import com.emikhalets.simplenotes.presentation.theme.SimpleNotesTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
