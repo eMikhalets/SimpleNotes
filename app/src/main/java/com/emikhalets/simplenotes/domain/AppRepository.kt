@@ -7,7 +7,7 @@ interface AppRepository {
 
     fun getTasks(): Result<Flow<List<TaskEntity>>>
     fun getTask(id: Long): Result<Flow<TaskEntity>>
-    fun insertTask(entity: TaskEntity): Result<Unit>
-    fun updateTask(entity: TaskEntity): Result<Unit>
-    fun deleteTask(entity: TaskEntity): Result<Unit>
+    suspend fun insertTask(entity: TaskEntity): Result<Unit>
+    suspend fun updateTask(entity: TaskEntity): Result<Unit>
+    suspend fun deleteTask(entity: TaskEntity): Result<Unit>
 }
