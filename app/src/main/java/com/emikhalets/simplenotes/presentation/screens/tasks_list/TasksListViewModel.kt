@@ -51,10 +51,17 @@ class TasksListViewModel @Inject constructor(
         }
     }
 
-    fun updateTask(entity: TaskEntity) {
+    fun updateTask(entity: TaskEntity?, newContent: String) {
+        entity ?: return
         viewModelScope.launch {
-            val oldCheck = entity.checked
-            val newEntity = entity.copy(checked = !oldCheck)
+            val newEntity = entity.copy(content = newContent)
+            updateTaskUseCase.invoke(newEntity).onFailure { throwable -> handleFailure(throwable) }
+        }
+    }
+
+    fun updateTask(entity: TaskEntity, newChecked: Boolean) {
+        viewModelScope.launch {
+            val newEntity = entity.copy(checked = newChecked)
             updateTaskUseCase.invoke(newEntity).onFailure { throwable -> handleFailure(throwable) }
         }
     }

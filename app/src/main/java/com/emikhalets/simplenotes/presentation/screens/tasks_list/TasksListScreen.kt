@@ -1,6 +1,7 @@
 package com.emikhalets.simplenotes.presentation.screens.tasks_list
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,15 +12,24 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Checkbox
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,12 +40,12 @@ import com.emikhalets.simplenotes.presentation.theme.AppTheme
 import com.emikhalets.simplenotes.utils.toast
 
 @Composable
-fun TasksListScreen(
-    navigateToTaskItem: (Long) -> Unit,
-    viewModel: TasksListViewModel = hiltViewModel(),
-) {
+fun TasksListScreen(viewModel: TasksListViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
+
+    var editTaskEntity by remember { mutableStateOf<TaskEntity?>(null) }
+    var showAddTaskDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.getAllTasks()
@@ -52,23 +62,56 @@ fun TasksListScreen(
 
     TasksListScreen(
         tasksList = state.tasksList,
-        onTaskClick = { id -> navigateToTaskItem(id) },
-        onCheckTask = { entity -> viewModel.updateTask(entity) },
+        onTaskClick = { entity -> editTaskEntity = entity },
+        onCheckTask = { entity, checked -> viewModel.updateTask(entity, checked) },
+        onAddTaskClick = { showAddTaskDialog = true },
     )
+
+    if (showAddTaskDialog) {
+        AddTaskDialog(
+            onDismiss = { showAddTaskDialog = false },
+            onSaveClick = { taskContent ->
+                viewModel.insertTask(taskContent)
+                showAddTaskDialog = false
+            }
+        )
+    }
+
+    if (editTaskEntity != null) {
+        EditTaskDialog(
+            initContent = editTaskEntity?.content ?: "",
+            onDismiss = { editTaskEntity = null },
+            onSaveClick = { taskContent ->
+                viewModel.updateTask(editTaskEntity, taskContent)
+                editTaskEntity = null
+            }
+        )
+    }
 }
 
 @Composable
 private fun TasksListScreen(
     tasksList: List<TaskEntity>,
-    onTaskClick: (Long) -> Unit,
-    onCheckTask: (TaskEntity) -> Unit,
+    onTaskClick: (TaskEntity) -> Unit,
+    onCheckTask: (TaskEntity, Boolean) -> Unit,
+    onAddTaskClick: () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         AppTopBar(title = stringResource(id = R.string.tasks_list_screen_title))
 
-        LazyColumn(Modifier.fillMaxWidth()) {
-            items(tasksList) { entity ->
-                TaskRow(entity, onTaskClick, onCheckTask)
+        Box(Modifier.fillMaxSize()) {
+            LazyColumn(Modifier.fillMaxWidth()) {
+                items(tasksList) { entity ->
+                    TaskRow(entity, onTaskClick, onCheckTask)
+                }
+            }
+            FloatingActionButton(
+                onClick = { onAddTaskClick() },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = null)
             }
         }
     }
@@ -77,23 +120,25 @@ private fun TasksListScreen(
 @Composable
 private fun TaskRow(
     entity: TaskEntity,
-    onTaskClick: (Long) -> Unit,
-    onCheckTask: (TaskEntity) -> Unit,
+    onTaskClick: (TaskEntity) -> Unit,
+    onCheckTask: (TaskEntity, Boolean) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onTaskClick(entity.id) }
+            .clickable { onTaskClick(entity) }
             .padding(8.dp)
     ) {
         Checkbox(
             checked = entity.checked,
-            onCheckedChange = { onCheckTask(entity) }
+            onCheckedChange = { onCheckTask(entity, it) }
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
             text = entity.content,
+            color = if (entity.checked) Color.Gray else Color.Unspecified,
+            textDecoration = if (entity.checked) TextDecoration.LineThrough else null,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
@@ -109,7 +154,7 @@ private fun ScreenPreview() {
             tasksList = listOf(
                 TaskEntity(content = "Task content"),
                 TaskEntity(content = "Task content"),
-                TaskEntity(content = "Task content"),
+                TaskEntity(content = "Task content", checked = true),
                 TaskEntity(content = "Task content"),
                 TaskEntity(content = "Task content"),
                 TaskEntity(content = "Task content"),
@@ -117,7 +162,8 @@ private fun ScreenPreview() {
                 TaskEntity(content = "Task content"),
             ),
             onTaskClick = {},
-            onCheckTask = {},
+            onCheckTask = { _, _ -> },
+            onAddTaskClick = {},
         )
     }
 }
