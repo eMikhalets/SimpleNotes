@@ -5,5 +5,5 @@ import com.emikhalets.simplenotes.domain.entities.TaskEntity
 
 class InsertTaskUseCase(private val repository: AppRepository) {
 
-    operator fun invoke(entity: TaskEntity) = repository.insertTask(entity)
+    suspend operator fun invoke(entity: TaskEntity) = repository.insertTask(entity)
 }

@@ -5,5 +5,5 @@ import com.emikhalets.simplenotes.domain.entities.TaskEntity
 
 class DeleteTaskUseCase(private val repository: AppRepository) {
 
-    operator fun invoke(entity: TaskEntity) = repository.deleteTask(entity)
+    suspend operator fun invoke(entity: TaskEntity) = repository.deleteTask(entity)
 }
