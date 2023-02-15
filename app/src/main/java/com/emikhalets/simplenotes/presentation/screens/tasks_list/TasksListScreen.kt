@@ -129,7 +129,7 @@ private fun TasksListScreen(
         Box(Modifier.fillMaxSize()) {
             LazyColumn(Modifier.fillMaxWidth()) {
                 items(tasksList) { entity ->
-                    TaskRow(entity, onTaskClick, onCheckTask)
+                    TaskRow(entity, checkedTasksVisible, onTaskClick, onCheckTask)
                 }
             }
             FloatingActionButton(
@@ -147,9 +147,11 @@ private fun TasksListScreen(
 @Composable
 private fun TaskRow(
     entity: TaskEntity,
+    checkedTasksVisible: Boolean,
     onTaskClick: (TaskEntity) -> Unit,
     onCheckTask: (TaskEntity, Boolean) -> Unit,
 ) {
+    if (!checkedTasksVisible && entity.checked) return
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
