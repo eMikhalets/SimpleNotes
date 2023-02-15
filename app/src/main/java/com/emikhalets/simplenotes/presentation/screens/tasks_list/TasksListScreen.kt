@@ -17,12 +17,15 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,17 +38,27 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.emikhalets.simplenotes.R
 import com.emikhalets.simplenotes.domain.entities.TaskEntity
+import com.emikhalets.simplenotes.domain.entities.TopBarActionEntity
 import com.emikhalets.simplenotes.presentation.core.AppTopBar
 import com.emikhalets.simplenotes.presentation.theme.AppTheme
 import com.emikhalets.simplenotes.utils.toast
+import kotlinx.coroutines.launch
 
 @Composable
 fun TasksListScreen(viewModel: TasksListViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
+    val scope = rememberCoroutineScope()
 
     var editTaskEntity by remember { mutableStateOf<TaskEntity?>(null) }
     var showAddTaskDialog by remember { mutableStateOf(false) }
+    var checkedTasksVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            viewModel.dataStore.collectCheckedTasksVisible { checkedTasksVisible = it }
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.getAllTasks()
@@ -62,9 +75,13 @@ fun TasksListScreen(viewModel: TasksListViewModel = hiltViewModel()) {
 
     TasksListScreen(
         tasksList = state.tasksList,
+        checkedTasksVisible = checkedTasksVisible,
         onTaskClick = { entity -> editTaskEntity = entity },
         onCheckTask = { entity, checked -> viewModel.updateTask(entity, checked) },
         onAddTaskClick = { showAddTaskDialog = true },
+        onCheckedTaskIconClick = {
+            scope.launch { viewModel.dataStore.changeCheckedTasksVisible() }
+        },
     )
 
     if (showAddTaskDialog) {
@@ -92,17 +109,27 @@ fun TasksListScreen(viewModel: TasksListViewModel = hiltViewModel()) {
 @Composable
 private fun TasksListScreen(
     tasksList: List<TaskEntity>,
+    checkedTasksVisible: Boolean,
     onTaskClick: (TaskEntity) -> Unit,
     onCheckTask: (TaskEntity, Boolean) -> Unit,
     onAddTaskClick: () -> Unit,
+    onCheckedTaskIconClick: () -> Unit,
 ) {
+    val checkedTasksIcon = if (checkedTasksVisible) Icons.Default.VisibilityOff
+    else Icons.Default.Visibility
+
     Column(modifier = Modifier.fillMaxSize()) {
-        AppTopBar(title = stringResource(id = R.string.tasks_list_screen_title))
+        AppTopBar(
+            title = stringResource(id = R.string.tasks_list_screen_title),
+            actions = listOf(
+                TopBarActionEntity(checkedTasksIcon) { onCheckedTaskIconClick() }
+            )
+        )
 
         Box(Modifier.fillMaxSize()) {
             LazyColumn(Modifier.fillMaxWidth()) {
                 items(tasksList) { entity ->
-                    TaskRow(entity, onTaskClick, onCheckTask)
+                    TaskRow(entity, checkedTasksVisible, onTaskClick, onCheckTask)
                 }
             }
             FloatingActionButton(
@@ -120,9 +147,11 @@ private fun TasksListScreen(
 @Composable
 private fun TaskRow(
     entity: TaskEntity,
+    checkedTasksVisible: Boolean,
     onTaskClick: (TaskEntity) -> Unit,
     onCheckTask: (TaskEntity, Boolean) -> Unit,
 ) {
+    if (!checkedTasksVisible && entity.checked) return
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -161,9 +190,11 @@ private fun ScreenPreview() {
                 TaskEntity(content = "Task content"),
                 TaskEntity(content = "Task content"),
             ),
+            checkedTasksVisible = true,
             onTaskClick = {},
             onCheckTask = { _, _ -> },
             onAddTaskClick = {},
+            onCheckedTaskIconClick = {},
         )
     }
 }

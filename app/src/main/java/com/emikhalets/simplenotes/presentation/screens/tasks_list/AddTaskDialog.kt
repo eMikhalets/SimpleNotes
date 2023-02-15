@@ -8,9 +8,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -45,7 +47,6 @@ fun AddTaskDialog(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(40.dp)
                 .background(
                     color = MaterialTheme.colors.background,
                     shape = RoundedCornerShape(12.dp)
@@ -58,10 +59,15 @@ fun AddTaskDialog(
                 TextField(
                     value = taskContent,
                     onValueChange = { taskContent = it },
-                    modifier = Modifier.focusRequester(focusRequester)
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = { onSaveClick(taskContent) }) {
+                TextButton(onClick = { onSaveClick(taskContent) }) {
                     Text(text = stringResource(id = R.string.tasks_list_save))
                 }
             }

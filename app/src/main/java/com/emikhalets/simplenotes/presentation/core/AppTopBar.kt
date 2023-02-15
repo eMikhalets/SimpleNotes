@@ -12,12 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.emikhalets.simplenotes.domain.entities.TopBarActionEntity
 import com.emikhalets.simplenotes.presentation.theme.AppTheme
 
 @Composable
 fun AppTopBar(
     title: String,
     modifier: Modifier = Modifier,
+    actions: List<TopBarActionEntity> = emptyList(),
     onNavigateBack: (() -> Unit)? = null,
 ) {
     TopAppBar(
@@ -39,6 +41,19 @@ fun AppTopBar(
                     modifier = Modifier
                         .clickable { onNavigateBack() }
                         .padding(20.dp, 16.dp)
+
+                )
+            }
+        },
+        actions = {
+            actions.forEach { menu ->
+                Icon(
+                    imageVector = menu.imageVector,
+//                    tint = MaterialTheme.colors.onPrimary,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .clickable { menu.onClick() }
+                        .padding(10.dp, 16.dp)
 
                 )
             }
