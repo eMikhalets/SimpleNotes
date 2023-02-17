@@ -2,6 +2,7 @@ package com.emikhalets.simplenotes.di
 
 import android.content.Context
 import com.emikhalets.simplenotes.data.database.AppDatabase
+import com.emikhalets.simplenotes.data.database.NotesDao
 import com.emikhalets.simplenotes.data.database.TasksDao
 import dagger.Module
 import dagger.Provides
@@ -19,4 +20,7 @@ object DatabaseModule {
 
     @Provides
     fun providesTasksDao(database: AppDatabase): TasksDao = database.tasksDao
+
+    @Provides
+    fun providesNotesDao(database: AppDatabase): NotesDao = database.notesDao
 }

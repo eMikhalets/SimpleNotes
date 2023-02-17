@@ -82,6 +82,8 @@ fun EditTaskDialog(
 @Composable
 private fun ScreenPreview() {
     AppTheme {
-        EditTaskDialog("test content", {}, {})
+        com.emikhalets.simplenotes.presentation.screens.notes_list.EditTaskDialog("test content",
+            {},
+            {})
     }
 }

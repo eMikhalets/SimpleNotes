@@ -40,6 +40,7 @@ import com.emikhalets.simplenotes.R
 import com.emikhalets.simplenotes.domain.entities.TaskEntity
 import com.emikhalets.simplenotes.domain.entities.TopBarActionEntity
 import com.emikhalets.simplenotes.presentation.core.AppTopBar
+import com.emikhalets.simplenotes.presentation.screens.notes_list.TasksListViewModel
 import com.emikhalets.simplenotes.presentation.theme.AppTheme
 import com.emikhalets.simplenotes.utils.toast
 import kotlinx.coroutines.launch
@@ -85,7 +86,7 @@ fun TasksListScreen(viewModel: TasksListViewModel = hiltViewModel()) {
     )
 
     if (showAddTaskDialog) {
-        AddTaskDialog(
+        com.emikhalets.simplenotes.presentation.screens.notes_list.AddTaskDialog(
             onDismiss = { showAddTaskDialog = false },
             onSaveClick = { taskContent ->
                 viewModel.insertTask(taskContent)
@@ -95,7 +96,7 @@ fun TasksListScreen(viewModel: TasksListViewModel = hiltViewModel()) {
     }
 
     if (editTaskEntity != null) {
-        EditTaskDialog(
+        com.emikhalets.simplenotes.presentation.screens.notes_list.EditTaskDialog(
             initContent = editTaskEntity?.content ?: "",
             onDismiss = { editTaskEntity = null },
             onSaveClick = { taskContent ->
