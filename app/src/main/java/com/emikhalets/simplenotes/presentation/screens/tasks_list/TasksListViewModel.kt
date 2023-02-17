@@ -7,7 +7,6 @@ import com.emikhalets.simplenotes.domain.use_cases.tasks.DeleteTaskUseCase
 import com.emikhalets.simplenotes.domain.use_cases.tasks.GetAllTasksUseCase
 import com.emikhalets.simplenotes.domain.use_cases.tasks.InsertTaskUseCase
 import com.emikhalets.simplenotes.domain.use_cases.tasks.UpdateTaskUseCase
-import com.emikhalets.simplenotes.presentation.screens.notes_list.TasksListState
 import com.emikhalets.simplenotes.utils.AppDataStore
 import com.emikhalets.simplenotes.utils.UiString
 import dagger.hilt.android.lifecycle.HiltViewModel
