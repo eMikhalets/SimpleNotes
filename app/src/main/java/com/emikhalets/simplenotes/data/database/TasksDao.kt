@@ -17,10 +17,13 @@ interface TasksDao {
     @Update
     suspend fun update(entity: TaskDb)
 
+    @Update
+    suspend fun update(entities: List<TaskDb>)
+
     @Delete
     suspend fun delete(entity: TaskDb)
 
-    @Query("SELECT * FROM tasks_table")
+    @Query("SELECT * FROM tasks_table ORDER BY sort_order DESC")
     fun getAllFlow(): Flow<List<TaskDb>>
 
     @Query("SELECT * FROM tasks_table WHERE id = :id")
