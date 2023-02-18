@@ -1,4 +1,4 @@
-package com.emikhalets.simplenotes.presentation.screens.tasks_list
+package com.emikhalets.simplenotes.presentation.screens.notes_list
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -45,7 +45,7 @@ import com.emikhalets.simplenotes.utils.toast
 import kotlinx.coroutines.launch
 
 @Composable
-fun TasksListScreen(viewModel: TasksListViewModel = hiltViewModel()) {
+fun NotesListScreen(viewModel: NotesListViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
     val scope = rememberCoroutineScope()
@@ -74,7 +74,7 @@ fun TasksListScreen(viewModel: TasksListViewModel = hiltViewModel()) {
         }
     }
 
-    TasksListScreen(
+    NotesListScreen(
         tasksList = state.tasksList,
         checkedTasksList = state.checkedList,
         checkedTasksVisible = checkedTasksVisible,
@@ -89,7 +89,7 @@ fun TasksListScreen(viewModel: TasksListViewModel = hiltViewModel()) {
     )
 
     if (showAddTaskDialog) {
-        AddTaskDialog(
+        AddNoteDialog(
             onDismiss = { showAddTaskDialog = false },
             onSaveClick = { taskContent ->
                 viewModel.insertTask(taskContent)
@@ -99,7 +99,7 @@ fun TasksListScreen(viewModel: TasksListViewModel = hiltViewModel()) {
     }
 
     if (editTaskEntity != null) {
-        EditTaskDialog(
+        EditNoteDialog(
             initContent = editTaskEntity?.content ?: "",
             onDismiss = { editTaskEntity = null },
             onSaveClick = { taskContent ->
@@ -111,7 +111,7 @@ fun TasksListScreen(viewModel: TasksListViewModel = hiltViewModel()) {
 }
 
 @Composable
-private fun TasksListScreen(
+private fun NotesListScreen(
     tasksList: List<TaskEntity>,
     checkedTasksList: List<TaskEntity>,
     checkedTasksVisible: Boolean,
@@ -209,7 +209,7 @@ private fun TaskRow(
 @Composable
 private fun ScreenPreview() {
     AppTheme {
-        TasksListScreen(
+        NotesListScreen(
             tasksList = listOf(
                 TaskEntity(content = "Task content"),
                 TaskEntity(content = "Task content"),

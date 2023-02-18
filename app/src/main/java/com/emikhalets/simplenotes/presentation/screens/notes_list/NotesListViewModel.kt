@@ -1,4 +1,4 @@
-package com.emikhalets.simplenotes.presentation.screens.tasks_list
+package com.emikhalets.simplenotes.presentation.screens.notes_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,7 +7,6 @@ import com.emikhalets.simplenotes.domain.use_cases.tasks.DeleteTaskUseCase
 import com.emikhalets.simplenotes.domain.use_cases.tasks.GetAllTasksUseCase
 import com.emikhalets.simplenotes.domain.use_cases.tasks.InsertTaskUseCase
 import com.emikhalets.simplenotes.domain.use_cases.tasks.UpdateTaskUseCase
-import com.emikhalets.simplenotes.presentation.screens.notes_list.NotesListState
 import com.emikhalets.simplenotes.utils.AppDataStore
 import com.emikhalets.simplenotes.utils.UiString
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +20,7 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class TasksListViewModel @Inject constructor(
+class NotesListViewModel @Inject constructor(
     private val getAllTasksUseCase: GetAllTasksUseCase,
     private val insertTaskUseCase: InsertTaskUseCase,
     private val updateTaskUseCase: UpdateTaskUseCase,

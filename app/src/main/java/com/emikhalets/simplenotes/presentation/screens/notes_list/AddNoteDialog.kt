@@ -1,4 +1,4 @@
-package com.emikhalets.simplenotes.presentation.screens.tasks_list
+package com.emikhalets.simplenotes.presentation.screens.notes_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -32,14 +32,13 @@ import com.emikhalets.simplenotes.R
 import com.emikhalets.simplenotes.presentation.theme.AppTheme
 
 @Composable
-fun EditTaskDialog(
-    initContent: String,
+fun AddNoteDialog(
     onDismiss: () -> Unit,
     onSaveClick: (String) -> Unit,
 ) {
     val focusRequester = remember { FocusRequester.Default }
 
-    var taskContent by remember { mutableStateOf(initContent) }
+    var taskContent by remember { mutableStateOf("") }
 
     Dialog(
         onDismissRequest = { onDismiss() },
@@ -82,8 +81,6 @@ fun EditTaskDialog(
 @Composable
 private fun ScreenPreview() {
     AppTheme {
-        com.emikhalets.simplenotes.presentation.screens.notes_list.EditNoteDialog("test content",
-            {},
-            {})
+        AddNoteDialog({}, {})
     }
 }

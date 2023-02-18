@@ -81,6 +81,6 @@ fun AddTaskDialog(
 @Composable
 private fun ScreenPreview() {
     AppTheme {
-        com.emikhalets.simplenotes.presentation.screens.notes_list.AddTaskDialog({}, {})
+        AddTaskDialog({}, {})
     }
 }

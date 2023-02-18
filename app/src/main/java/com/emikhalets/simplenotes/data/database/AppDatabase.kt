@@ -11,7 +11,7 @@ import com.emikhalets.simplenotes.data.database.entities.TaskDb
 @Database(
     entities = [
         TaskDb::class,
-//        NoteDb::class
+        NoteDb::class
     ],
     autoMigrations = [
         AutoMigration(1, 2)
@@ -22,7 +22,7 @@ import com.emikhalets.simplenotes.data.database.entities.TaskDb
 abstract class AppDatabase : RoomDatabase() {
 
     abstract val tasksDao: TasksDao
-//    abstract val notesDao: NotesDao
+    abstract val notesDao: NotesDao
 
     companion object {
 
