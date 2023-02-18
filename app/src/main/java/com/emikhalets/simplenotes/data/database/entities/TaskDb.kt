@@ -10,6 +10,5 @@ data class TaskDb(
     @ColumnInfo(name = "id") val id: Long = 0,
     @ColumnInfo(name = "content") val content: String,
     @ColumnInfo(name = "checked") val checked: Boolean,
-    @ColumnInfo(name = "sort_order", defaultValue = "0") val sortOrder: Int,
     @ColumnInfo(name = "saved_time", defaultValue = "0") val savedTime: Long,
 )

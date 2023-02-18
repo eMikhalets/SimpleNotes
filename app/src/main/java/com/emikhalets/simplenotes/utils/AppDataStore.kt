@@ -18,11 +18,11 @@ class AppDataStore @Inject constructor(
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = NAME)
 
     suspend fun collectCheckedTasksVisible(block: (Boolean) -> Unit) = context.dataStore.data
-        .map { it[CHECKED_TASKS_VISIBLE] ?: false }
+        .map { it[CHECKED_TASKS_VISIBLE] ?: true }
         .collectLatest { block(it) }
 
     suspend fun changeCheckedTasksVisible() = context.dataStore.edit {
-        val current = it[CHECKED_TASKS_VISIBLE] ?: false
+        val current = it[CHECKED_TASKS_VISIBLE] ?: true
         it[CHECKED_TASKS_VISIBLE] = !current
     }
 

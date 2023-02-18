@@ -10,7 +10,6 @@ class TasksMapper @Inject constructor() {
         id = dbEntity.id,
         content = dbEntity.content,
         checked = dbEntity.checked,
-        sortOrder = dbEntity.sortOrder,
         savedTime = dbEntity.savedTime
     )
 
@@ -22,7 +21,6 @@ class TasksMapper @Inject constructor() {
         id = entity.id,
         content = entity.content,
         checked = entity.checked,
-        sortOrder = entity.sortOrder,
         savedTime = entity.savedTime
     )
 
