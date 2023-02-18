@@ -16,7 +16,12 @@ class AppRepositoryImpl @Inject constructor(
 ) : AppRepository {
 
     override fun getTasks(): Result<Flow<List<TaskEntity>>> {
-        return executeSync { tasksDao.getAllFlow().map { tasksMapper.mapDbListToEntityList(it) } }
+        return executeSync {
+            tasksDao.getAllFlow().map { list ->
+                val mapped = tasksMapper.mapDbListToEntityList(list)
+                mapped.sortedBy { it.checked }
+            }
+        }
     }
 
     override fun getTask(id: Long): Result<Flow<TaskEntity>> {
@@ -29,6 +34,10 @@ class AppRepositoryImpl @Inject constructor(
 
     override suspend fun updateTask(entity: TaskEntity): Result<Unit> {
         return executeAsync { tasksDao.update(tasksMapper.mapEntityToDb(entity)) }
+    }
+
+    override suspend fun updateTasks(entities: List<TaskEntity>): Result<Unit> {
+        return executeAsync { tasksDao.update(tasksMapper.mapEntityListToDbList(entities)) }
     }
 
     override suspend fun deleteTask(entity: TaskEntity): Result<Unit> {

@@ -10,6 +10,7 @@ class TasksMapper @Inject constructor() {
         id = dbEntity.id,
         content = dbEntity.content,
         checked = dbEntity.checked,
+        savedTime = dbEntity.savedTime
     )
 
     fun mapDbListToEntityList(dbList: List<TaskDb>): List<TaskEntity> = dbList.map {
@@ -20,6 +21,7 @@ class TasksMapper @Inject constructor() {
         id = entity.id,
         content = entity.content,
         checked = entity.checked,
+        savedTime = entity.savedTime
     )
 
     fun mapEntityListToDbList(entityList: List<TaskEntity>): List<TaskDb> = entityList.map {

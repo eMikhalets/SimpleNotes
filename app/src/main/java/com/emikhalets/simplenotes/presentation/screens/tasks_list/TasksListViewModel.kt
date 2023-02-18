@@ -7,6 +7,7 @@ import com.emikhalets.simplenotes.domain.use_cases.tasks.DeleteTaskUseCase
 import com.emikhalets.simplenotes.domain.use_cases.tasks.GetAllTasksUseCase
 import com.emikhalets.simplenotes.domain.use_cases.tasks.InsertTaskUseCase
 import com.emikhalets.simplenotes.domain.use_cases.tasks.UpdateTaskUseCase
+import com.emikhalets.simplenotes.domain.use_cases.tasks.UpdateTasksListUseCase
 import com.emikhalets.simplenotes.utils.AppDataStore
 import com.emikhalets.simplenotes.utils.UiString
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,6 +25,7 @@ class TasksListViewModel @Inject constructor(
     private val getAllTasksUseCase: GetAllTasksUseCase,
     private val insertTaskUseCase: InsertTaskUseCase,
     private val updateTaskUseCase: UpdateTaskUseCase,
+    private val updateTasksListUseCase: UpdateTasksListUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     val dataStore: AppDataStore,
 ) : ViewModel() {
@@ -42,13 +45,15 @@ class TasksListViewModel @Inject constructor(
 
     private suspend fun setAllTasksState(flow: Flow<List<TaskEntity>>) {
         flow.collectLatest { list ->
-            _state.update { it.copy(tasksList = list) }
+            val tasks = list.filter { !it.checked }
+            val checked = list.filter { it.checked }
+            _state.update { it.copy(tasksList = tasks, checkedList = checked) }
         }
     }
 
     fun insertTask(content: String) {
         viewModelScope.launch {
-            val entity = TaskEntity(content = content)
+            val entity = TaskEntity(content = content, savedTime = Date().time)
             insertTaskUseCase.invoke(entity).onFailure { throwable -> handleFailure(throwable) }
         }
     }

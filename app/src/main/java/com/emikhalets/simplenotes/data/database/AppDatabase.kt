@@ -1,6 +1,7 @@
 package com.emikhalets.simplenotes.data.database
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -8,8 +9,10 @@ import com.emikhalets.simplenotes.data.database.entities.TaskDb
 
 @Database(
     entities = [TaskDb::class],
-    autoMigrations = [],
-    version = 1,
+    autoMigrations = [
+        AutoMigration(1, 2)
+    ],
+    version = 2,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
