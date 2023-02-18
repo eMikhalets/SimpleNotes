@@ -14,9 +14,10 @@ import com.emikhalets.simplenotes.data.database.entities.TaskDb
         NoteDb::class
     ],
     autoMigrations = [
-        AutoMigration(1, 2)
+        AutoMigration(1, 2),
+        AutoMigration(2, 3),
     ],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {

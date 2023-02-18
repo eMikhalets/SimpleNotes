@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -21,8 +22,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,11 +37,13 @@ import com.emikhalets.simplenotes.presentation.theme.AppTheme
 @Composable
 fun AddNoteDialog(
     onDismiss: () -> Unit,
-    onSaveClick: (String) -> Unit,
+    onSaveClick: (title: String, content: String) -> Unit,
 ) {
     val focusRequester = remember { FocusRequester.Default }
+    val focusManager = LocalFocusManager.current
 
-    var taskContent by remember { mutableStateOf("") }
+    var title by remember { mutableStateOf("") }
+    var content by remember { mutableStateOf("") }
 
     Dialog(
         onDismissRequest = { onDismiss() },
@@ -57,18 +62,33 @@ fun AddNoteDialog(
                 modifier = Modifier.padding(16.dp)
             ) {
                 TextField(
-                    value = taskContent,
-                    onValueChange = { taskContent = it },
+                    value = title,
+                    onValueChange = { title = it },
+                    singleLine = true,
+                    maxLines = 1,
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Sentences
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { focusManager.moveFocus(FocusDirection.Next) }
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester)
                 )
+                TextField(
+                    value = content,
+                    onValueChange = { content = it },
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                )
                 Spacer(modifier = Modifier.height(16.dp))
-                TextButton(onClick = { onSaveClick(taskContent) }) {
-                    Text(text = stringResource(id = R.string.tasks_list_save))
+                TextButton(onClick = { onSaveClick(title, content) }) {
+                    Text(text = stringResource(id = R.string.notes_list_save))
                 }
             }
         }
@@ -81,6 +101,6 @@ fun AddNoteDialog(
 @Composable
 private fun ScreenPreview() {
     AppTheme {
-        AddNoteDialog({}, {})
+        AddNoteDialog({}, { _, _ -> })
     }
 }

@@ -1,10 +1,9 @@
 package com.emikhalets.simplenotes.presentation.screens.notes_list
 
-import com.emikhalets.simplenotes.domain.entities.TaskEntity
+import com.emikhalets.simplenotes.domain.entities.NoteEntity
 import com.emikhalets.simplenotes.utils.UiString
 
 data class NotesListState(
-    val tasksList: List<TaskEntity> = emptyList(),
-    val checkedList: List<TaskEntity> = emptyList(),
+    val notesList: List<NoteEntity> = emptyList(),
     val error: UiString? = null,
 )

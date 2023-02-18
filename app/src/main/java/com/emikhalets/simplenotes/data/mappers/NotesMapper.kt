@@ -10,8 +10,7 @@ class NotesMapper @Inject constructor() {
         id = dbEntity.id,
         title = dbEntity.title,
         content = dbEntity.content,
-        sortOrder = dbEntity.sortOrder,
-        saveTime = dbEntity.saveTime,
+        savedTime = dbEntity.savedTime,
     )
 
     fun mapDbListToEntityList(dbList: List<NoteDb>): List<NoteEntity> = dbList.map {
@@ -22,8 +21,7 @@ class NotesMapper @Inject constructor() {
         id = entity.id,
         title = entity.title,
         content = entity.content,
-        sortOrder = entity.sortOrder,
-        saveTime = entity.saveTime,
+        savedTime = entity.savedTime,
     )
 
     fun mapEntityListToDbList(entityList: List<NoteEntity>): List<NoteDb> = entityList.map {

@@ -10,6 +10,5 @@ data class NoteDb(
     @ColumnInfo(name = "id") val id: Long = 0,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "content") val content: String,
-    @ColumnInfo(name = "sort_order", defaultValue = "0") val sortOrder: Int,
-    @ColumnInfo(name = "saved_time", defaultValue = "0") val saveTime: Long,
+    @ColumnInfo(name = "saved_time", defaultValue = "0") val savedTime: Long,
 )

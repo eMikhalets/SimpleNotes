@@ -29,7 +29,7 @@ class TasksListViewModel @Inject constructor(
     val dataStore: AppDataStore,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(NotesListState())
+    private val _state = MutableStateFlow(TasksListState())
     val state get() = _state.asStateFlow()
 
     fun resetError() = _state.update { it.copy(error = null) }

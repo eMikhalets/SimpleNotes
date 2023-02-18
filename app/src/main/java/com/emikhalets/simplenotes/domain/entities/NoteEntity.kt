@@ -4,6 +4,5 @@ data class NoteEntity(
     val id: Long = 0,
     val title: String,
     val content: String,
-    val sortOrder: Int,
-    val saveTime: Long,
+    val savedTime: Long = 0,
 )

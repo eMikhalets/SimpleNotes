@@ -2,12 +2,11 @@ package com.emikhalets.simplenotes.presentation.screens.notes_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.emikhalets.simplenotes.domain.entities.TaskEntity
-import com.emikhalets.simplenotes.domain.use_cases.tasks.DeleteTaskUseCase
-import com.emikhalets.simplenotes.domain.use_cases.tasks.GetAllTasksUseCase
-import com.emikhalets.simplenotes.domain.use_cases.tasks.InsertTaskUseCase
-import com.emikhalets.simplenotes.domain.use_cases.tasks.UpdateTaskUseCase
-import com.emikhalets.simplenotes.utils.AppDataStore
+import com.emikhalets.simplenotes.domain.entities.NoteEntity
+import com.emikhalets.simplenotes.domain.use_cases.notes.DeleteNoteUseCase
+import com.emikhalets.simplenotes.domain.use_cases.notes.GetAllNotesUseCase
+import com.emikhalets.simplenotes.domain.use_cases.notes.InsertNoteUseCase
+import com.emikhalets.simplenotes.domain.use_cases.notes.UpdateNoteUseCase
 import com.emikhalets.simplenotes.utils.UiString
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -21,11 +20,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NotesListViewModel @Inject constructor(
-    private val getAllTasksUseCase: GetAllTasksUseCase,
-    private val insertTaskUseCase: InsertTaskUseCase,
-    private val updateTaskUseCase: UpdateTaskUseCase,
-    private val deleteTaskUseCase: DeleteTaskUseCase,
-    val dataStore: AppDataStore,
+    private val getAllNotesUseCase: GetAllNotesUseCase,
+    private val insertNoteUseCase: InsertNoteUseCase,
+    private val updateNoteUseCase: UpdateNoteUseCase,
+    private val deleteNoteUseCase: DeleteNoteUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(NotesListState())
@@ -33,47 +31,38 @@ class NotesListViewModel @Inject constructor(
 
     fun resetError() = _state.update { it.copy(error = null) }
 
-    fun getAllTasks() {
+    fun getAllNotes() {
         viewModelScope.launch {
-            getAllTasksUseCase.invoke()
-                .onSuccess { flow -> setAllTasksState(flow) }
+            getAllNotesUseCase.invoke()
+                .onSuccess { flow -> setAllNotesState(flow) }
                 .onFailure { throwable -> handleFailure(throwable) }
         }
     }
 
-    private suspend fun setAllTasksState(flow: Flow<List<TaskEntity>>) {
+    private suspend fun setAllNotesState(flow: Flow<List<NoteEntity>>) {
         flow.collectLatest { list ->
-            val tasks = list.filter { !it.checked }
-            val checked = list.filter { it.checked }
-            _state.update { it.copy(tasksList = tasks, checkedList = checked) }
+            _state.update { it.copy(notesList = list) }
         }
     }
 
-    fun insertTask(content: String) {
+    fun insertNote(title: String, content: String) {
         viewModelScope.launch {
-            val entity = TaskEntity(content = content, savedTime = Date().time)
-            insertTaskUseCase.invoke(entity).onFailure { throwable -> handleFailure(throwable) }
+            val entity = NoteEntity(title = title, content = content, savedTime = Date().time)
+            insertNoteUseCase.invoke(entity).onFailure { throwable -> handleFailure(throwable) }
         }
     }
 
-    fun updateTask(entity: TaskEntity?, newContent: String) {
+    fun updateNote(entity: NoteEntity?, newTitle: String, newContent: String) {
         entity ?: return
         viewModelScope.launch {
-            val newEntity = entity.copy(content = newContent)
-            updateTaskUseCase.invoke(newEntity).onFailure { throwable -> handleFailure(throwable) }
+            val newEntity = entity.copy(title = newTitle, content = newContent)
+            updateNoteUseCase.invoke(newEntity).onFailure { throwable -> handleFailure(throwable) }
         }
     }
 
-    fun updateTask(entity: TaskEntity, newChecked: Boolean) {
+    fun deleteNote(entity: NoteEntity) {
         viewModelScope.launch {
-            val newEntity = entity.copy(checked = newChecked)
-            updateTaskUseCase.invoke(newEntity).onFailure { throwable -> handleFailure(throwable) }
-        }
-    }
-
-    fun deleteTask(entity: TaskEntity) {
-        viewModelScope.launch {
-            deleteTaskUseCase.invoke(entity).onFailure { throwable -> handleFailure(throwable) }
+            deleteNoteUseCase.invoke(entity).onFailure { throwable -> handleFailure(throwable) }
         }
     }
 
