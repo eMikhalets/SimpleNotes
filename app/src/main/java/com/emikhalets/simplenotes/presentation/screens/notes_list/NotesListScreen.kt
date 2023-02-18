@@ -92,7 +92,6 @@ private fun NotesListScreen(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            AppTopBar(title = stringResource(id = R.string.notes_list_screen_title))
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 items(notesList) { entity ->
                     NoteRow(entity, onNoteClick)
