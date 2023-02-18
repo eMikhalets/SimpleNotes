@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Checkbox
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -125,54 +127,71 @@ private fun TasksListScreen(
     val checkedTasksIcon = if (checkedTasksVisible) Icons.Default.VisibilityOff
     else Icons.Default.Visibility
 
-    val collapsedTasksIcon = if (checkedTasksCollapsed) Icons.Default.KeyboardArrowUp
-    else Icons.Default.KeyboardArrowDown
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        AppTopBar(
-            title = stringResource(id = R.string.tasks_list_screen_title),
-            actions = listOf(
-                TopBarActionEntity(checkedTasksIcon) { onCheckedTaskIconClick() }
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            AppTopBar(
+                title = stringResource(id = R.string.tasks_list_screen_title),
+                actions = listOf(
+                    TopBarActionEntity(checkedTasksIcon) { onCheckedTaskIconClick() }
+                )
             )
-        )
-        tasksList.forEach { entity ->
-            TaskRow(entity, onTaskClick, onCheckTask)
-        }
-        if (checkedTasksVisible && checkedTasksList.isNotEmpty()) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onCollapseTasksClick() }
-            ) {
-                Text(
-                    text = stringResource(R.string.tasks_list_completed, checkedTasksList.size),
-                    color = Color.Gray,
-                    modifier = Modifier.padding(8.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Icon(
-                    imageVector = collapsedTasksIcon,
-                    contentDescription = null,
-                    tint = Color.Gray
-                )
-            }
-            if (!checkedTasksCollapsed) {
-                checkedTasksList.forEach { entity ->
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                items(tasksList) { entity ->
                     TaskRow(entity, onTaskClick, onCheckTask)
+                }
+                if (checkedTasksVisible && checkedTasksList.isNotEmpty()) {
+                    item {
+                        CompletedTasksHeader(
+                            tasksSize = checkedTasksList.size,
+                            checkedTasksCollapsed = checkedTasksCollapsed,
+                            onCollapseTasksClick = onCollapseTasksClick
+                        )
+                    }
+                    if (!checkedTasksCollapsed) {
+                        items(checkedTasksList) { entity ->
+                            TaskRow(entity, onTaskClick, onCheckTask)
+                        }
+                    }
                 }
             }
         }
-        Box(Modifier.fillMaxSize()) {
-            FloatingActionButton(
-                onClick = { onAddTaskClick() },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp)
-            ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = null)
-            }
+        FloatingActionButton(
+            onClick = { onAddTaskClick() },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        ) {
+            Icon(imageVector = Icons.Default.Add, contentDescription = null)
         }
+    }
+}
+
+@Composable
+private fun CompletedTasksHeader(
+    tasksSize: Int,
+    checkedTasksCollapsed: Boolean,
+    onCollapseTasksClick: () -> Unit,
+) {
+    val collapsedTasksIcon = if (checkedTasksCollapsed) Icons.Default.KeyboardArrowUp
+    else Icons.Default.KeyboardArrowDown
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onCollapseTasksClick() }
+    ) {
+        Text(
+            text = stringResource(R.string.tasks_list_completed, tasksSize),
+            color = Color.Gray,
+            modifier = Modifier.padding(8.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Icon(
+            imageVector = collapsedTasksIcon,
+            contentDescription = null,
+            tint = Color.Gray
+        )
     }
 }
 
@@ -211,6 +230,11 @@ private fun ScreenPreview() {
     AppTheme {
         TasksListScreen(
             tasksList = listOf(
+                TaskEntity(content = "Task content"),
+                TaskEntity(content = "Task content"),
+                TaskEntity(content = "Task content"),
+                TaskEntity(content = "Task content"),
+                TaskEntity(content = "Task content"),
                 TaskEntity(content = "Task content"),
                 TaskEntity(content = "Task content"),
                 TaskEntity(content = "Task content"),
