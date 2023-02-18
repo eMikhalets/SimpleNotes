@@ -5,5 +5,6 @@ import com.emikhalets.simplenotes.utils.UiString
 
 data class TasksListState(
     val tasksList: List<TaskEntity> = emptyList(),
+    val checkedList: List<TaskEntity> = emptyList(),
     val error: UiString? = null,
 )

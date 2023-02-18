@@ -23,7 +23,7 @@ interface TasksDao {
     @Delete
     suspend fun delete(entity: TaskDb)
 
-    @Query("SELECT * FROM tasks_table ORDER BY sort_order DESC")
+    @Query("SELECT * FROM tasks_table ORDER BY saved_time DESC")
     fun getAllFlow(): Flow<List<TaskDb>>
 
     @Query("SELECT * FROM tasks_table WHERE id = :id")
