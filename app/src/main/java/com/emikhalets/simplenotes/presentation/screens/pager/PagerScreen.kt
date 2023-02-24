@@ -1,12 +1,10 @@
 package com.emikhalets.simplenotes.presentation.screens.pager
 
+//import com.google.accompanist.pager.ExperimentalPagerApi
+//import com.google.accompanist.pager.HorizontalPager
+//import com.google.accompanist.pager.rememberPagerState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.TabRowDefaults
-import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -24,21 +22,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.emikhalets.simplenotes.R
 import com.emikhalets.simplenotes.domain.entities.TopBarActionEntity
 import com.emikhalets.simplenotes.presentation.core.AppTopBar
-import com.emikhalets.simplenotes.presentation.screens.notes_list.NotesListScreen
 import com.emikhalets.simplenotes.presentation.screens.tasks_list.TasksListScreen
 import com.emikhalets.simplenotes.presentation.theme.AppTheme
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun PagerScreen(
     viewModel: PagerViewModel = hiltViewModel(),
 ) {
     val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState()
 
     var topBarTitle by remember { mutableStateOf("") }
     var checkedTasksVisible by remember { mutableStateOf(true) }
@@ -49,50 +41,77 @@ fun PagerScreen(
         stringResource(R.string.pager_title_notes)
     )
 
-    val checkedTasksIcon = if (checkedTasksVisible) Icons.Default.VisibilityOff
-    else Icons.Default.Visibility
-
     LaunchedEffect(Unit) {
         scope.launch {
             viewModel.dataStore.collectCheckedTasksVisible { checkedTasksVisible = it }
         }
     }
 
+    PagerScreen(
+        pages = pages,
+        topBarTitle = topBarTitle,
+        tasksTabSelected = tasksTabSelected,
+        checkedTasksVisible = checkedTasksVisible,
+        onCheckedTaskChange = { checkedTasksVisible = !checkedTasksVisible },
+        onTobBarTitleChange = { topBarTitle = it },
+        onTasksBarSelectedChange = { tasksTabSelected = it },
+    )
+}
+
+@Composable
+fun PagerScreen(
+    pages: List<String>,
+    topBarTitle: String,
+    tasksTabSelected: Boolean,
+    checkedTasksVisible: Boolean,
+    onCheckedTaskChange: () -> Unit,
+    onTobBarTitleChange: (String) -> Unit,
+    onTasksBarSelectedChange: (Boolean) -> Unit,
+) {
+    val scope = rememberCoroutineScope()
+    var currentPage by remember { mutableStateOf(0) }
+
+    val checkedTasksIcon = if (checkedTasksVisible) Icons.Default.VisibilityOff
+    else Icons.Default.Visibility
+
     Column(modifier = Modifier.fillMaxSize()) {
         AppTopBar(
             title = topBarTitle,
             actions = if (tasksTabSelected) {
                 listOf(
-                    TopBarActionEntity(checkedTasksIcon) {
-                        scope.launch { viewModel.dataStore.changeCheckedTasksVisible() }
-                    }
+                    TopBarActionEntity(checkedTasksIcon) { onCheckedTaskChange() }
                 )
             } else emptyList()
         )
-        TabRow(
-            selectedTabIndex = pagerState.currentPage,
-            indicator = { tabPositions ->
-                topBarTitle = pages[pagerState.currentPage]
-                tasksTabSelected = pagerState.currentPage == 0
-                TabRowDefaults.Indicator(
-                    Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage])
-                )
-            }
-        ) {
-            pages.forEachIndexed { index, title ->
-                Tab(
-                    text = { Text(title) },
-                    selected = pagerState.currentPage == index,
-                    onClick = { scope.launch { pagerState.scrollToPage(index) } },
-                )
-            }
-        }
-        HorizontalPager(count = 2, state = pagerState) { page ->
-            when (page) {
-                0 -> TasksListScreen(checkedTasksVisible = checkedTasksVisible)
-                1 -> NotesListScreen()
-            }
-        }
+//        TabRow(
+//            selectedTabIndex = currentPage,
+//            indicator = { tabPositions ->
+//                onTobBarTitleChange(pages[currentPage])
+//                onTasksBarSelectedChange(currentPage == 0)
+//                TabRowDefaults.Indicator(
+//                    Modifier.tabIndicatorOffset(tabPositions[currentPage])
+//                )
+//            }
+//        ) {
+//            pages.forEachIndexed { index, title ->
+//                Tab(
+//                    text = { Text(title) },
+//                    selected = currentPage == index,
+//                    onClick = { scope.launch { currentPage = index } },
+//                )
+//            }
+//        }
+//        LazyRow {
+//            items(listOf(0, 1)) { page ->
+//                when (page) {
+//                    0 -> TasksListScreen(checkedTasksVisible = checkedTasksVisible)
+//                    1 -> NotesListScreen()
+//                }
+//            }
+//        }
+        onTobBarTitleChange(pages[currentPage])
+        onTasksBarSelectedChange(currentPage == 0)
+        TasksListScreen(checkedTasksVisible = checkedTasksVisible)
     }
 }
 
