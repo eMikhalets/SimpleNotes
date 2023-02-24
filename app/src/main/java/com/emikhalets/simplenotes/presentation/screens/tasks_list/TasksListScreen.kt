@@ -40,28 +40,21 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.emikhalets.simplenotes.R
 import com.emikhalets.simplenotes.domain.entities.TaskEntity
-import com.emikhalets.simplenotes.domain.entities.TopBarActionEntity
-import com.emikhalets.simplenotes.presentation.core.AppTopBar
 import com.emikhalets.simplenotes.presentation.theme.AppTheme
 import com.emikhalets.simplenotes.utils.toast
-import kotlinx.coroutines.launch
 
 @Composable
-fun TasksListScreen(viewModel: TasksListViewModel = hiltViewModel()) {
+fun TasksListScreen(
+    checkedTasksVisible: Boolean,
+    viewModel: TasksListViewModel = hiltViewModel(),
+) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
     val scope = rememberCoroutineScope()
 
     var editTaskEntity by remember { mutableStateOf<TaskEntity?>(null) }
     var showAddTaskDialog by remember { mutableStateOf(false) }
-    var checkedTasksVisible by remember { mutableStateOf(true) }
     var checkedTasksCollapsed by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        scope.launch {
-            viewModel.dataStore.collectCheckedTasksVisible { checkedTasksVisible = it }
-        }
-    }
 
     LaunchedEffect(Unit) {
         viewModel.getAllTasks()
@@ -84,9 +77,6 @@ fun TasksListScreen(viewModel: TasksListViewModel = hiltViewModel()) {
         onTaskClick = { entity -> editTaskEntity = entity },
         onCheckTask = { entity, checked -> viewModel.updateTask(entity, checked) },
         onAddTaskClick = { showAddTaskDialog = true },
-        onCheckedTaskIconClick = {
-            scope.launch { viewModel.dataStore.changeCheckedTasksVisible() }
-        },
         onCollapseTasksClick = { checkedTasksCollapsed = !checkedTasksCollapsed },
     )
 
@@ -121,20 +111,10 @@ private fun TasksListScreen(
     onTaskClick: (TaskEntity) -> Unit,
     onCheckTask: (TaskEntity, Boolean) -> Unit,
     onAddTaskClick: () -> Unit,
-    onCheckedTaskIconClick: () -> Unit,
     onCollapseTasksClick: () -> Unit,
 ) {
-    val checkedTasksIcon = if (checkedTasksVisible) Icons.Default.VisibilityOff
-    else Icons.Default.Visibility
-
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            AppTopBar(
-                title = stringResource(id = R.string.tasks_list_screen_title),
-                actions = listOf(
-                    TopBarActionEntity(checkedTasksIcon) { onCheckedTaskIconClick() }
-                )
-            )
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 items(tasksList) { entity ->
                     TaskRow(entity, onTaskClick, onCheckTask)
@@ -163,6 +143,43 @@ private fun TasksListScreen(
         ) {
             Icon(imageVector = Icons.Default.Add, contentDescription = null)
         }
+        FloatingActionButton(
+            onClick = { onAddTaskClick() },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        ) {
+            Icon(imageVector = Icons.Default.Add, contentDescription = null)
+        }
+    }
+}
+
+@Composable
+private fun CompletedTasksHeader(
+    tasksSize: Int,
+    checkedTasksCollapsed: Boolean,
+    onCollapseTasksClick: () -> Unit,
+) {
+    val collapsedTasksIcon = if (checkedTasksCollapsed) Icons.Default.KeyboardArrowUp
+    else Icons.Default.KeyboardArrowDown
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onCollapseTasksClick() }
+    ) {
+        Text(
+            text = stringResource(R.string.tasks_list_completed, tasksSize),
+            color = Color.Gray,
+            modifier = Modifier.padding(8.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Icon(
+            imageVector = collapsedTasksIcon,
+            contentDescription = null,
+            tint = Color.Gray
+        )
     }
 }
 
@@ -248,12 +265,16 @@ private fun ScreenPreview() {
                 TaskEntity(content = "Task content", checked = true),
                 TaskEntity(content = "Task content", checked = true),
             ),
+            checkedTasksList = listOf(
+                TaskEntity(content = "Task content", checked = true),
+                TaskEntity(content = "Task content", checked = true),
+                TaskEntity(content = "Task content", checked = true),
+            ),
             checkedTasksVisible = true,
             checkedTasksCollapsed = false,
             onTaskClick = {},
             onCheckTask = { _, _ -> },
             onAddTaskClick = {},
-            onCheckedTaskIconClick = {},
             onCollapseTasksClick = {},
         )
     }

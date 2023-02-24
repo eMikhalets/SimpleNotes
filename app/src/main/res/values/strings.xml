@@ -3,7 +3,11 @@
 
     <string name="error_internal">Internal error</string>
 
-    <string name="tasks_list_screen_title">Tasks</string>
+    <string name="pager_title_tasks">Tasks</string>
+    <string name="pager_title_notes">Notes</string>
+
     <string name="tasks_list_save">Save</string>
     <string name="tasks_list_completed">Completed tasks (%d)</string>
+
+    <string name="notes_list_save">Save</string>
 </resources>

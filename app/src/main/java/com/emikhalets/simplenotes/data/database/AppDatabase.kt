@@ -5,19 +5,25 @@ import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.emikhalets.simplenotes.data.database.entities.NoteDb
 import com.emikhalets.simplenotes.data.database.entities.TaskDb
 
 @Database(
-    entities = [TaskDb::class],
-    autoMigrations = [
-        AutoMigration(1, 2)
+    entities = [
+        TaskDb::class,
+        NoteDb::class
     ],
-    version = 2,
+    autoMigrations = [
+        AutoMigration(1, 2),
+        AutoMigration(2, 3),
+    ],
+    version = 3,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract val tasksDao: TasksDao
+    abstract val notesDao: NotesDao
 
     companion object {
 
