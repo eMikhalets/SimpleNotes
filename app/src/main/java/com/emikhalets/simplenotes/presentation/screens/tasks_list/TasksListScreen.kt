@@ -19,6 +19,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -141,6 +143,43 @@ private fun TasksListScreen(
         ) {
             Icon(imageVector = Icons.Default.Add, contentDescription = null)
         }
+        FloatingActionButton(
+            onClick = { onAddTaskClick() },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        ) {
+            Icon(imageVector = Icons.Default.Add, contentDescription = null)
+        }
+    }
+}
+
+@Composable
+private fun CompletedTasksHeader(
+    tasksSize: Int,
+    checkedTasksCollapsed: Boolean,
+    onCollapseTasksClick: () -> Unit,
+) {
+    val collapsedTasksIcon = if (checkedTasksCollapsed) Icons.Default.KeyboardArrowUp
+    else Icons.Default.KeyboardArrowDown
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onCollapseTasksClick() }
+    ) {
+        Text(
+            text = stringResource(R.string.tasks_list_completed, tasksSize),
+            color = Color.Gray,
+            modifier = Modifier.padding(8.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Icon(
+            imageVector = collapsedTasksIcon,
+            contentDescription = null,
+            tint = Color.Gray
+        )
     }
 }
 
@@ -215,6 +254,16 @@ private fun ScreenPreview() {
                 TaskEntity(content = "Task content"),
                 TaskEntity(content = "Task content"),
                 TaskEntity(content = "Task content"),
+                TaskEntity(content = "Task content"),
+                TaskEntity(content = "Task content"),
+                TaskEntity(content = "Task content"),
+                TaskEntity(content = "Task content"),
+                TaskEntity(content = "Task content"),
+            ),
+            checkedTasksList = listOf(
+                TaskEntity(content = "Task content", checked = true),
+                TaskEntity(content = "Task content", checked = true),
+                TaskEntity(content = "Task content", checked = true),
             ),
             checkedTasksList = listOf(
                 TaskEntity(content = "Task content", checked = true),

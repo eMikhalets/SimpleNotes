@@ -8,6 +8,7 @@ import com.emikhalets.simplenotes.domain.use_cases.tasks.GetAllTasksUseCase
 import com.emikhalets.simplenotes.domain.use_cases.tasks.InsertTaskUseCase
 import com.emikhalets.simplenotes.domain.use_cases.tasks.UpdateTaskUseCase
 import com.emikhalets.simplenotes.presentation.screens.notes_list.NotesListState
+import com.emikhalets.simplenotes.domain.use_cases.tasks.UpdateTasksListUseCase
 import com.emikhalets.simplenotes.utils.AppDataStore
 import com.emikhalets.simplenotes.utils.UiString
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +26,7 @@ class TasksListViewModel @Inject constructor(
     private val getAllTasksUseCase: GetAllTasksUseCase,
     private val insertTaskUseCase: InsertTaskUseCase,
     private val updateTaskUseCase: UpdateTaskUseCase,
+    private val updateTasksListUseCase: UpdateTasksListUseCase,
     private val deleteTaskUseCase: DeleteTaskUseCase,
     val dataStore: AppDataStore,
 ) : ViewModel() {
